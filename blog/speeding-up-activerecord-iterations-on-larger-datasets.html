@@ -1,0 +1,211 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Speeding up ActiveRecord iterations on larger datasets | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Speeding up ActiveRecord iterations on larger datasets" />
+    <meta name="description" content="As the size of your database tables starts to grow, looping through data sets becomes a more expensive operation. How do you use the power of ActiveRecord to query your data at scale?">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="speeding-up-activerecord-iterations-on-larger-datasets">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Speeding up ActiveRecord iterations on larger datasets</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2017-10-02">02 Oct 2018</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                As the size of your database tables starts to grow, looping through data sets becomes a more expensive operation.
+              </p>
+              <p>
+                Commonly used tactics such as using <code class="inline">#find_each</code> and <code class="inline">#find_in_batches</code> are great. In addition to that, it’s also good to be aware of how data is transferred and parsed by the ActiveRecord query interface
+              </p>
+              <p>
+                There are two steps here which start becoming bottlenecks at scale –
+              </p>
+              <p>
+              <ol>
+                <li>
+                  The time it takes to transfer query result data from your DB back to your application
+                </li>
+                <li>
+                  The time it takes for ActiveRecord to parse the result set and build the model object
+                </li>
+              </ol>
+              </p>
+              <p>
+                One obvious approach is to limit the data you query by only selecting the columns in a model you need instead of blindly selecting all columns. After all, do you really intend on using every column?
+              </p>
+              <p>
+                Let’s take a closer look at how doing that would impact the above operation times. In the examples below I query one of the larger models in my application (<code class="inline">User</code>) repeatedly to benchmark the results when selecting all columns versus just one column.
+              </p>
+              <p>
+                The model is on the medium to large side (16 columns, 2 database indexes, over 10k records) and I find myself iterating through it on a regular basis since it’s one of the cornerstone tables of the application. Benchmarks were pulled from a non-development Heroku-hosted environment that has to connect to a remote database – a common setup in most production Rails applications.
+              </p>
+              <h3>
+                1. Data Transfer
+              </h3>
+              <p>
+                In the below example we repeatedly query the database but don’t parse the result into a model. This lets us isolate and measure the query time against the database.
+              </p>
+              <p>
+                As you can see, selecting a specific column is about <b>7x more efficient</b>! It makes sense given that we’re returning about 90% less data by selecting 1 column
+              </p>
+              <pre class="code-block">
+                <code class="language-ruby">
+require 'benchmark'
+
+N = 1_000
+conn = ActiveRecord::Base.connection
+
+Benchmark.bm do |x|
+  # Include a random OFFSET in below queries so cached results are not returned
+
+  x.report("all columns") do
+    N.times do
+      conn.execute("SELECT * FROM users LIMIT 1000 OFFSET #{(1000*rand).round};")
+    end
+  end
+
+  x.report("one column") do
+    N.times do
+      conn.execute("SELECT email FROM users LIMIT 1000 OFFSET #{(1000*rand).round};")
+    end
+  end
+end
+
+
+       user     system      total        real
+all columns  1.920000   2.510000   4.430000 ( 16.687199)
+one column  0.370000   0.260000   0.630000 (  2.804193)
+                </code>
+              </pre>
+              <h3>
+                2. Parsing the Result Set
+              </h3>
+              <p>
+                In the below example we use <code class="inline">#find_by_sql</code> to construct the model objects from the query result set, but we execute the same query each time so ActiveRecord and our Database should be returning some form of cached results. This lets us isolate and measure just the time it takes to build the model object.
+              </p>
+              <p>
+                Again, selecting 1 column is much more efficient, but only by a factor 1.6x. The overhead of parsing and instantiating model objects is pretty high and while we definitely have less data to parse, the overall time cost of this operation remains high in both cases.
+              </p>
+              <pre class="code-block">
+                <code class="language-ruby">
+N = 1_000
+
+Benchmark.bm do |x|
+  x.report("all columns") do
+    N.times do
+      User.find_by_sql("SELECT * FROM users LIMIT 1000;")
+    end
+  end
+
+  x.report("one column") do
+    N.times do
+      User.find_by_sql("SELECT email FROM users LIMIT 1000;")
+    end
+  end
+end
+
+       user     system      total        real
+all columns 29.530000   2.280000  31.810000 ( 34.459085)
+one column 19.110000   1.040000  20.150000 ( 21.719567)
+                </code>
+              </pre>
+              <h3>
+                Putting it all together
+              </h3>
+              <p>
+                We’ve learned 2 things –
+              </p>
+              <p>
+              <ol>
+                <li>
+                  It’s preferable to limit the size of the dataset by selecting specific columns
+                </li>
+                <li>
+                  It’s somewhat speedier to avoid constructing ActiveRecord objects where possible
+                </li>
+              </ol>
+              </p>
+              <p>
+                The above aren’t ground breaking conclusions, but it’s nice to know the magnitude of how much more or less efficient something is.
+              </p>
+              <p>
+                So if you’re looking to perform a simple operation based on a few columns, just query the DB directly
+              </p>
+              <pre class="code-block">
+                <code class="language-ruby">
+ActiveRecord::Base.connection.execute("SELECT email FROM users;").each do |record|
+  email = record["email"]
+  # ...
+end
+                </code>
+              </pre>
+              <p>
+                If you need to instantiate a model object, at least be sure to get some gain and limit the column set
+              </p>
+              <pre class="code-block">
+                <code class="language-ruby">
+User.select(:email).find_each do |user|
+  # ...
+end
+                </code>
+              </pre>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>
