@@ -1,0 +1,289 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Using interactors to keep your controllers neat | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Using interactors to keep your controllers neat" />
+    <meta name="description" content="Rails developers do their best to keep their controllers neat and trimmed down. One of my personal favorite approaches is the interactor design pattern... find out more!">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="1">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Using interactors to keep your controllers neat</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2017-09-10">10 Sep 2017</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                Rails developers do their best to keep their controllers neat and trimmed down. You've probably heard the phrase "<em><a href="http://weblog.jamisbuck.org/2006/10/18/skinny-controller-fat-model">skinny controller, fat model</a></em>" or even "<em><a href="https://robots.thoughtbot.com/skinny-controllers-skinny-models">skinny controller, skinny model</a></em>".
+              </p>
+              <p>
+                The justification for smaller controllers comes down to a few things -
+              </p>
+              <ol>
+                <li>Controllers are the entry point for several different route actions, which means that no one action should be cluttering up the file with its own logic. The controller is a <em>common class</em> for multiple actions.</li>
+                <li>Logic can't be easily isolated and tested for every combination of input if it sits in the controller. The result is often a very long set of controller specs that's difficult to read, debug, and maintain.</li>
+                <li>Generally keeping things simple, both visually and technically</li>
+              </ol>
+              <h2>Introducing Interactors</h2>
+              <p>
+                One of my personal favorite approaches to smaller controllers is the <strong>interactor design pattern</strong>, which lets you abstract away much of the core logic for any particular action.
+              </p>
+              <blockquote>
+                <p>
+                  An interactor is a simple, single-purpose object.
+                </p>
+                <p>
+                  Interactors are used to encapsulate your application's&nbsp;<a target="_blank" href="http://en.wikipedia.org/wiki/Business_logic">business logic</a>. Each interactor represents one thing that your application&nbsp;<em>does</em>.
+                </p>
+                <p>
+                  <em>- <a href="https://github.com/collectiveidea/interactor">interactor gem</a></em> <code class="inline">README</code>
+                </p>
+              </blockquote>
+              <p>
+                An <strong>interactor </strong>object will run a series of steps (your business logic) and report back on whether the action was successful or not. This is perfect for abstracting away logic because your controller action <em>doesn't have to care</em> about the implementation, it just wants to know whether those steps were successfully executed or not.
+              </p>
+              <p>
+                The interactor gem noted above is one of many ways to implement this design pattern. I use it in the examples below because it's&nbsp; extremely light-weight. In fact, I highly encourage you to read it yourself as it's only a few small files. If you're up to it, you could even implement it yourself if you're opposed to adding another dependency to your app.
+              </p>
+              <h1>An Example</h1>
+              <p>
+                My favorite use case to use interactors is for form submission validation.
+              </p>
+              <p>
+                Let's say we have a simple form that lets a user sign up for our app. They enter their first name, last name, and email address and hit "submit"
+              </p>
+              <p>
+                We'll want to validate a few things -
+              <p>
+              <ol>
+                <li>First or Last name should not be blank</li>
+                <li>Email should not be blank</li>
+                <li>Email should not be taken by another existing user</li>
+                <li>Email should be of a valid format (let's say x@y.z to keep it simple)</li>
+              </ol>
+              <h3>UsersController</h3>
+              <p>
+                Our controller action will receive the params and create the user
+              </p>
+              <pre class="code-block">
+              <code class="language-ruby">
+class UsersController < ApplicationController
+  def create
+    # Validate the form data and return if it is not correct
+    # We'll come back and fill in the ???? with the call to the
+    # interactor shortly.
+    unless ("????")
+      flash[:error] = "????"
+      redirect_to(new_users_path)
+      return
+    end
+
+    user = User.create!(user_params)
+    flash[:success] = "Woohoo, you created an account"
+
+    redirect_to(user_path(@ser))
+  end
+
+  private
+
+  def user_params
+    @user_params || = params.require(:user).permit(
+      :first_name,
+      :last_name,
+      :email
+     )
+  end
+end
+              </code>
+            </pre>
+              <h3>The Interactor</h3>
+              <p>
+                Below is the interactor that we could write to perform the series of validations on the data. It takes the params hash from the controller as an input and runs through the series of checks, failing along the way if any particular check fails.
+              </p>
+              <pre class="code-block">
+              <code class="language-ruby">
+class UsersCreateActionInteractor
+  include Interactor
+
+  def call
+    @params = context.params
+
+    case
+    when name_is_blank?         then handle_blank_name
+    when email_is_blank?        then handle_blank_email
+    when email_is_taken?        then handle_email_is_taken
+    when email_format_invalid?  then handle_email_format_invalid
+    else
+      handle_success
+    end
+  end
+
+  private
+
+  def name_is_blank?
+    @params[:first_name].blank? || @params[:last_name].blank?
+  end
+
+  def handle_blank_name
+    # Note: The interactor gem supports a short-hand notation for
+    # the below actions:
+    #    > context.fail!(err_msg: "...")
+    context.err_msg = "Please fill in a name"
+    context.fail!
+  end
+
+  def email_is_blank?
+    @params[:email].blank?
+  end
+
+  def handle_blank_email
+    context.err_msg = "Please fill in an email"
+    context.fail!
+  end
+
+  def email_is_taken?
+    User.find_by_email(@params[:email]).any?
+  end
+
+  def handle_email_is_taken
+    context.err_msg = "That email already exists!"
+    context.fail!
+  end
+
+  def email_format_invalid?
+    (@params[:email] =~ /.*@.*\..*/i).blank?
+  end
+
+  def handle_email_format_invalid
+    context.err_msg = "Sorry, that doesn't look like an email address"
+    context.fail!
+  end
+
+  def handle_success
+    # n/a
+  end
+end
+              </code>
+            </pre>
+              <p>
+                A few things to note here:
+              </p>
+              <ol>
+                <li>You need to include the interactor module in any particular class to make it an interactor</li>
+                <li>The <code class="inline">#call</code> method is invoked when the interactor is called.</li>
+                <li>The <a href="https://github.com/collectiveidea/interactor/blob/master/lib/interactor/context.rb#L31">context object</a> is just a simple <a href="http://ruby-doc.org/stdlib-2.4.1/libdoc/ostruct/rdoc/OpenStruct.html"><code class="inline">OpenStruct</code></a> object provided to you by the interactor. (If you're not familiar with <code class="inline">OpenStruct</code>, it's very similar to a hash but lets you access keys with the dot operator).The <code class="inline">context</code> object contains the arguments passed to the interactor (in this case the params), and you can further set any arbitrary values on it that will be available even after the interactor has finished running (<code class="inline">context.foo = "bar"</code>). In this case we store the error message so our controller can access it and set it as the flash message.</li>
+                <li>If any particular action fails, we call the <code class="inline">#fail</code>! method, which will halt further execution and fail immediately. If #fail! is never called, the interactor implicitly marks itself as successful.</li>
+              </ol>
+              <p>
+                The beauty of this format is that all these checks are fully encapsulated inside a separate class. It's also scalable to add more checks easily as your number of validations grows, without cluttering up the main controller.
+              </p>
+              <h3>Tying it together</h3>
+              <p>
+                Now that we have our interactor in place, lets go back to the controller and see how we should call it
+              </p>
+              <pre class="code-block">
+              <code class="language-ruby">
+class UsersController < ApplicationController
+  def create
+    validator = UsersCreateActionInteractor.call(params: user_params)
+
+    unless validator.success?
+      flash[:error] = validator.err_msg
+      redirect_to(new_users_path)
+      return
+    end
+
+    user = User.create!(user_params)
+    flash[:success] = "Woohoo, you created an account"
+
+    redirect_to(user_path(@ser))
+  end
+
+  private
+
+  def user_params
+    @user_params || = params.require(:user).permit(
+      :first_name,
+      :last_name,
+      :email
+     )
+  end
+end
+              </code>
+            </pre>
+              </p>
+              We call our interactor using the class-level <code class="inline">.call</code> method (the gem itself has some logic to create an instance and invoke the <code class="inline">#call</code> method we defined earlier). The resulting object makes a few things available to us in the controller.
+              </p>
+              <ul class="bulleted">
+                <li>The <code class="inline">#success?</code> method, which returns <code class="inline">true</code> or <code class="inline">false</code></li>
+                <li>The <code class="inline">#failure?</code> method, which is just the opposite of the above</li>
+                <li>Any keys you might have set on the context inside the controller. In our case, <code class="inline">#err_msg</code> is available from the controller</li>
+              </ul>
+              <p>
+                Now your logic in the controller is vastly simplified, and relies on outsourcing all the core validations/checks to a separate interactor which does the heavy lifting.
+              </p>
+              <h3>Testing</h3>
+              <p>
+                Hopefully you can see how writing tests for our use case has now become easier!
+              </p>
+              <p>
+                In the spirit of <a href="http://mikepackdev.com/blog_posts/39-high-low-testing">high-low testing</a>, we can confidently and cleanly test every combination of params inputs in our interactor specs. That way the controller has to only focus on testing one passing and one failing scenario, with the confidence that the interactor will correctly succeed or fail as needed.
+              </p>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>

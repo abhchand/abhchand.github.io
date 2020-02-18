@@ -1,0 +1,189 @@
+.content {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: stretch;
+  box-sizing: border-box;
+  width: 50%;
+  max-width: 850px;
+  margin: 0 25%;
+  padding: 60px;
+  line-height: 1.8;
+}
+
+@media all and (max-width: 1024px) {
+  .content {
+    flex-direction: column;
+    width: 95.5%;
+  }
+}
+
+.content__left {
+}
+
+.content__right {
+  margin-left: 100px;
+}
+
+.intro {
+  width: 100%;
+}
+
+@media all and (max-width: 980px) {
+  .intro {
+    text-align: center;
+  }
+}
+
+@media all and (max-width: 480px) {
+  .intro {
+    margin-top: 50px;
+  }
+}
+
+.intro__location {
+  text-decoration: underline;
+}
+
+.interests {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  align-content: center;
+  width: 100%;
+  margin-top: 50px;
+  padding-left: 0;
+}
+
+.interests__element {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 29%;
+  margin: 0 4% 35px 0%;
+  color: #757575;
+  font-size: 14px;
+}
+
+@media all and (max-width: 550px) {
+  .interests__element {
+    font-size: 14px;
+  }
+}
+
+@media all and (max-width: 480px) {
+  .interests__element {
+    font-size: 12px;
+  }
+}
+
+@media all and (max-width: 400px) {
+  .interests__element {
+    font-size: 10px;
+  }
+}
+
+.interests__element svg {
+  width: 42px;
+  height: 42px;
+  fill: #757575;
+}
+
+.interests__element svg text {
+  display: none;
+}
+
+.interests__element span {
+  white-space: nowrap;
+}
+
+.profile-photo {
+  width: 200px;
+}
+
+@media all and (max-width: 980px) {
+  .profile-photo {
+    display: block;
+    width: 200px;
+    margin-top: 40px;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.profile-photo img {
+  box-sizing: border-box;
+  width: 100%;
+  border: 2px solid #2196F3;
+  -webkit-border-radius: 50%;
+  -moz-border-radius: 50%;
+  border-radius: 50%;
+}
+
+.profile-photo img:hover {
+  border: 2px solid #FFAA00;
+}
+
+.share {
+  display: flex;
+  flex-direction: column;
+  width: 200px;
+}
+
+@media all and (max-width: 980px) {
+  .share {
+    flex-direction: row;
+    justify-content: center;
+    margin-right: auto;
+    margin-left: auto;
+  }
+}
+
+.share_element {
+  margin: 5px 0;
+}
+
+.share_element-link {
+  display: flex;
+}
+
+/* Specify `a` to make this specific enough to override `application.css` */
+a.share_element-link {
+  color: #000000;
+  font-size: 16px;
+  text-decoration: none;
+}
+
+.share_element-image {
+  width: 30px;
+  height: 30px;
+  margin-right: 10px;
+}
+
+@media all and (max-width: 980px) {
+  .share_element-image {
+    margin-right: 6px;
+    margin-left: 6px;
+  }
+}
+
+.share_element-label {
+  height: 30px;
+  line-height: 30px
+}
+
+@media all and (max-width: 980px) {
+  .share_element-label {
+    display: none;
+  }
+}
+
+.linkedin img {
+  border-radius: 5px;
+}
+
+.twitter img {
+  border-radius: 50%;
+}
