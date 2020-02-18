@@ -99,6 +99,10 @@ ul.bulleted {
   text-decoration: none;
 }
 
+.nav-container .brand a:hover {
+  color: inherit;
+}
+
 .nav-container .brand span.highlight {
   color: #FFAA00;
 }
