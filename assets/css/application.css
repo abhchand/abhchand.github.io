@@ -13,6 +13,10 @@ a:link, a:visited {
   text-decoration: underline;
 }
 
+a:hover {
+  color: #FFAA00;
+}
+
 blockquote {
   margin-left: 10px;
   padding-left: 40px;

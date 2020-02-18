@@ -1,0 +1,33 @@
+#content {
+  box-sizing: border-box;
+  width: 50%;
+  max-width: 850px;
+  margin: 0 25%;
+  padding: 60px;
+  line-height: 1.8;
+}
+
+.post {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: flex-start;
+  align-items: center;
+  height: 25px;
+}
+
+.post a {
+  text-decoration: none;
+}
+
+.post .post__domain {
+  width: 20px;
+  height: 20px;
+  margin-right: 15px;
+  padding-bottom: 5px;
+}
+
+.post .post__domain img {
+  height: 20px;
+  width: 20px;
+}
