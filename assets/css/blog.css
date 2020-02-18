@@ -42,3 +42,13 @@
   margin-top: 50px;
   margin-bottom: 25px;
 }
+
+p.note {
+  display: block;
+  padding: 9.5px;
+  margin: 0 0 10px;
+  color:  black;
+  background-color: #FFFFE0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}

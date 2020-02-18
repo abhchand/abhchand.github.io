@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Easy route management for Java Spark applications | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Easy route management for Java Spark applications" />
+    <meta name="description" content="Even a small application can have many URL routes, which grow difficult to manage over time. To address readability of my Spark Java application I use this methodology to manage routing">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="easy-route-management-for-java-spark-applications">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Easy route management for Java Spark applications</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2017-12-20">20 Dec 2017</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                Even a small application can have many URL routes, which grow difficult to manage over time.
+              </p>
+              <p>
+                Frameworks like Rails and Django provide a lot of functionality to easily express complex routes and map them to internal actions. However in frameworks like Spark Java it tends to require a lot more code to acheive the same thing.
+              </p>
+              <h3>
+                Goals
+              </h3>
+              <p>
+                There’s two goals I try to adhere to whenever managing my routes –
+              </p>
+              <ol>
+                <li>
+                  Readability – organizing them into smaller more paresable sections
+                </li>
+                <li>
+                  Easy versioning – Building new routes to serve content while simultaneously supporting old route mappings. Generally this is much more applicable to JSON API’s than HTML content, but it could be either.
+                </li>
+              </ol>
+              <p>
+                To address readability I strive to keep each resource’s (e.g. User, Post, etc..) routes in a separate file.
+              </p>
+              <p>
+                To enable easy versioning I run multiple instances of the Spark server.
+              </p>
+              <p class="note">
+                Running multiple Spark instances is only available in <a target="_blank" href="http://sparkjava.com/news.html#spark-25-released">version 2.5 (May 2016)</a> or later
+              </p>
+              <h3>
+                A flexible design pattern
+              </h3>
+              <p>
+                We create an <code class="inline">HttpContext</code> for each version we want to support. Each context is essentially it’s own Spark application, so we could host <code class="inline">/api/v1</code> on one instance and <code class="inline">/api/v2</code> on another.
+              </p>
+              <pre class="code-block">
+                <code class="language-java">
+// HttpContext.java
+package me.abhchand.example;
+
+import com.google.gson.Gson;
+
+import spark.Service;
+import spark.Spark;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+public class HttpContext {
+
+  private static final Logger LOG = LoggerFactory.getLogger(HttpContext.class);
+
+  private final Service http;
+
+  private final String basePath;
+
+  public HttpContext(String basePath, int port) {
+    this.basePath = basePath;
+    this.http = Service.ignite().port(port);
+
+    this.registerExceptionHandler();
+  }
+
+  public void registerRoutes(RouteBuilder builder) {
+    builder.register(http, basePath);
+
+    LOG.info("REST routes registered for {}.", builder.getClass().getSimpleName());
+  }
+
+  public void enableCors() {
+    http.before((req, res) -> {
+      res.header("Access-Control-Allow-Origin", "*");
+      res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+      res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
+    });
+
+    LOG.info("CORS support enabled.");
+  }
+
+  private void registerExceptionHandler() {
+    // User data error throws `IllegalArgumentException`, in which case
+    // return a 400 code since the request was bad
+    http.exception(IllegalArgumentException.class, (e, req, res) -> {
+      res.status(400);
+      res.body((new Gson()).toJson(e.getMessage()));
+    });
+
+    // For all other internal errors, return a 500
+    http.exception(Exception.class, (e, req, res) -> {
+      res.status(500);
+      res.body("{\"body\": \"An error has occurred\" }");
+    });
+  }
+}
+                </code>
+              </pre>
+              <p>
+                Secondly we define a <code class="inline">RouteBuilder</code> interface that lets us define routes for individual resources. Below we create routes for the <code class="inline">User</code> resource.
+              </p>
+              <pre class="code-block">
+                <code class="language-java">
+// RouteBuilder.java
+
+package me.abhchand.example;
+
+import spark.Service;
+
+public interface RouteBuilder {
+  void register(Service http, String basePath);
+}
+                </code>
+              </pre>
+              <pre class="code-block">
+                <code class="language-java">
+// UserRoutes.java
+
+package me.abhchand.example;
+
+import spark.Service;
+
+public class UserRoutes implements RouteBuilder {
+
+  @Override
+  public void register(Service http, String basePath) {
+    http.get(    basePath + "/users",     new UsersIndexHandler(basePath));
+    http.get(    basePath + "/users/:id", new UsersShowHandler(basePath));
+    http.post(   basePath + "/users",     new UsersCreateHandler(basePath));
+    http.put(    basePath + "/users/:id", new UsersUpdateHandler(basePath));
+    http.delete( basePath + "/users/:id", new UsersDestroyHandler(basePath));
+  }
+}
+                </code>
+              </pre>
+              <p>
+                The individual handlers seen above aren’t part of this example, but they are simply objects that implement the <code class="inline">spark</code>.Route interface and return a <code class="inline">String</code> response.
+              </p>
+              <p class="note">
+                Some implementations like to pass each handler a model object to generate the response. In most of my implementations I have the handler itself query the database for the model object. Either is fine, it should just be consistent and tailored to your implementation’s needs
+              </p>
+              <p>
+                Now that the piping is in place, it’s simply a matter of creating as many HTTP contexts as needed
+              </p>
+              <pre class="code-block">
+                <code class="language-java">
+// ApplicationMain.java
+
+package me.abhchand.example;
+
+import spark.Spark;
+
+public class ApplicationMain {
+
+  public static void main(String[] args) {
+    //
+    // Initialize a new Spark instance for /api/v1 and register the routes
+    //
+    HttpContext apiV1 = new HttpContext("/api/v1", 3000);
+
+    apiV1.enableCors();
+    apiV1.registerRoutes(new UserRoutes());
+
+
+    //
+    // Initialize a new Spark instance for /api/v2 and register the routes
+    //
+    HttpContext apiV2 = new HttpContext("/api/v2", 3001);
+
+    apiV2.enableCors();
+    apiV2.registerRoutes(new UserRoutes());
+  }
+}
+                </code>
+              </pre>
+              <p>
+                Here we’ve used the same route mappings for <code class="inline">/api/v1</code> and <code class="inline">/api/v2</code>, but more practically you could set up additional route builder classes and pass each version a different route mapping as needed.
+              </p>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>
