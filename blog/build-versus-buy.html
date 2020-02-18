@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Build versus Buy | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Build versus Buy" />
+    <meta name="description" content="Oftentimes when building software developers are faced with the decision of 'build' versus 'buy'. Should I utilize a prepackaged solution for the functionality I’m trying to implement, or should I build my own?">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="build-versus-buy">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Build versus Buy</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2020-02-16">16 Feb 2020</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                Oftentimes when building software developers are faced with the decision of “build” versus “buy”. Should I utilize a prepackaged solution for the functionality I’m trying to implement, or should I build my own?
+              </p>
+              <p>
+                There are plenty of reasons to choose “buy”, the most obvious being that someone else has already done the hard work. However I’ve found that “buy” is usually the default option for most people.
+              </p>
+              <p>
+                “Why should we re-invent this?”, they ask. It’s a simple (and fair) question and it’s usually right, but it often misses a certain nuance in some percentage of cases that truly benefit from building.
+              </p>
+              <p>
+                There’s several advantages to building your own functionality:
+              </p>
+              <h3>
+                Reduce the weight of your application
+              </h3>
+              <p>
+                If you need support a simple email login, why install the whole devise gem as a dependency? External functionality can pull in hundreds if not thousands of lines of code that add to the weight of your application. Reducing this weight can have great impacts in the long run in terms of binary size, speed of the build, etc..
+              </p>
+              <h3>
+                Control
+              </h3>
+              <p>
+                External software has the disadvantage of being almost entirely outside your control. It’s similar to eating food at a restaurant versus making it yourself – while the former is easier the latter gives you full control of what goes into the food. Perhaps a library abuses the access to your client’s browser <code class="inline">window</code> element, for example. Or an Identity service like Auth0 stores your users’ data improperly when you promised them security and anonymity. Ultimately the external software does what you need it to do, but not in the way you’d prefer.
+              </p>
+              <h3>
+                Learning opportunity
+              </h3>
+              <p>
+                Many times building something can be a fantastic learning opportunity. Configuring your own Webpack build instead of using a library like webpacker can be a great way to learn the internals of a complicated system like Webpack. It’s also a big intangible benefit for developers that are itching to learn something new. And having that knowledge in your developers’ minds goes a long in troubleshooting any issues that come up as well.
+              </p>
+              <h3>
+                Maintenance
+              </h3>
+              <p>
+                Every external dependency comes with the future promise of some maintenance. It can be as simple as upgrading the library version (which itself takes time to update, review, build, and deploy) to upgrading a to a newer API version, or all the way to updating a series of deprecated changes based on the external software’s own decisions. The fewer dependencies you have, the shorter your list of ongoing maintenance tasks.
+              </p>
+              <p>
+                Buy versus build is highly dependent on the context of the application.
+              </p>
+              <p>
+                While “buy” may be the right answer in several cases, it is important to not blindly and ignorantly default to it. Build is sometimes the correct option as well.
+              </p>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>
