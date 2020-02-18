@@ -1,0 +1,156 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Running only updated rspec files | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Running only updated rspec files" />
+    <meta name="description" content="As your Rails app gets larger, it becomes difficult and time consuming to run the full test suite locally when making changes. Find out how to re-run only the rspec files that have been updated.">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/blog.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="running-only-updated-rspec-files">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Running only updated rspec files</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2017-09-20">20 Sep 2017</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                As your Rails app gets larger, it becomes difficult and time consuming to run the full test suite locally when making changes.
+              </p>
+              <p>
+                Of course, your CI/Build process should always run all specs (and pass!) before merging, but for local development it’s often convenient to quickly test just those rspec files that have been updated in your feature branch.
+              </p>
+              <p>
+                I use a bash helper function that will –
+              </p>
+              <ol>
+                <li>
+                  Diff my current branch against master (or some other desired branch)
+                </li>
+                <li>
+                  Find out what spec files have been changed on my branch
+                </li>
+                <li>
+                  Eliminate any non-runnable files like <code class="inline">spec_helper.rb</code>
+                </li>
+                <li>
+                  Run those files
+                </li>
+              </ol>
+              <h3>
+                Writing it
+              </h3>
+              <p>
+                Add the following to your <code class="inline">.bash_profile</code>
+              </p>
+              <pre class="code-block">
+                <code class="language-bash">
+function run_changed_specs {
+  arg=$1
+  branch=${arg:-master}
+
+  files=$(git diff $branch..HEAD --name-only | grep spec | grep -v spec_helper.rb)
+
+  echo "==="
+  echo "Running files changed since $branch:"
+  echo $files
+  echo ""
+
+  rspec $(echo $files | tr '\n' ' ')
+}
+                </code>
+              </pre>
+              <p>
+                The above function eliminates <code class="inline">spec_helper.rb</code> since it’s not a runnable file.
+              </p>
+              <p class="note">
+                You may want to add other <code class="inline">grep</code> pipes for things you’d like to eliminate in your own app, like <code class="inline">spec/support</code> if you have support files or <code class="inline">spec/factories</code> if you use <code class="inline">FactoryBot</code>.
+              </p>
+              <h3>
+                Running it
+              </h3>
+              <p>
+                Now open a new terminal window (or source your <code class="inline">.bash_profile</code> again) and you can just run the function directly!
+              </p>
+              <pre class="code-block">
+                <code class="language-none">
+> run_changed_specs
+===
+Running files changed since master:
+spec/features/admin/creating_a_user.rb spec/models/user_spec.rb spec/services/users/create_user_service.rb
+
+Randomized with seed 46260
+..................
+
+Finished in 9.46 seconds (files took 1.39 seconds to load)
+18 examples, 0 failures
+
+Randomized with seed 46260
+                </code>
+              </pre>
+              <p>
+                If you want to diff against some other branch besides <code class="inline">master</code>, you can specify that as an argument
+              </p>
+              <pre class="code-block">
+                <code class="language-none">
+> run_changed_specs my-release-branch
+                </code>
+              </pre>
+
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>
