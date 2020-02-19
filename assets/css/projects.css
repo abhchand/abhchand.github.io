@@ -129,6 +129,10 @@
   width: 100%;
   height: inherit;
 }
+#ghtp .project-card__photo-grid-element img {
+  width: 100%;
+  height: inherit;
+}
 
 /*
   Mobile
