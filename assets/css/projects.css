@@ -50,6 +50,14 @@
   text-overflow:ellipsis;
 }
 
+.project-card__header-text--title a {
+  text-decoration: none;
+}
+
+.project-card__header-text--title a:hover {
+  color: #FFAA00;
+}
+
 .project-card__header-text--subtitle {
   margin: 10px 0;
 }
