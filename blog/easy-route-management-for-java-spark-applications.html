@@ -197,7 +197,7 @@ public class UserRoutes implements RouteBuilder {
                 </code>
               </pre>
               <p>
-                The individual handlers seen above aren’t part of this example, but they are simply objects that implement the <code class="inline">spark</code>.Route interface and return a <code class="inline">String</code> response.
+                The individual handlers seen above aren’t part of this example, but they are simply objects that implement the <code class="inline">spark.Route</code> interface and return a <code class="inline">String</code> response.
               </p>
               <p class="note">
                 Some implementations like to pass each handler a model object to generate the response. In most of my implementations I have the handler itself query the database for the model object. Either is fine, it should just be consistent and tailored to your implementation’s needs
