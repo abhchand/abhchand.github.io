@@ -61,20 +61,17 @@ code.inline {
 
 pre.code-block {
   margin: 25px 0;
+  font-size: 16px;
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.code-block .token.operator {
+  background: none;
 }
 
 ul.bulleted {
   list-style-type: circle;
-}
-
-@media screen {
-    pre .token.comment,
-    pre .token.prolog,
-    pre .token.doctype,
-    pre .token.cdata {
-        color: slategray;
-    }
-
 }
 
 /*
