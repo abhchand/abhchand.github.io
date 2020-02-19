@@ -4,9 +4,9 @@
 
 #content {
   box-sizing: border-box;
-  width: 50%;
-  max-width: 850px;
-  margin: 0 25%;
+  margin: 0 auto;
+  /* Total width = 60px + 840px + 60px = 960px */
+  width: 840px;
   padding: 60px;
   line-height: 1.8;
 }
@@ -55,4 +55,19 @@ p.note {
 
 .article-content img {
   width: 100%;
+}
+
+/*
+  Mobile
+*/
+
+@media all and (max-width: 960px) {
+  #content {
+    flex-direction: column-reverse;
+    width: 80%;
+    max-width: 500px;
+    padding: 60px 0;
+    min-width: 350px;
+    text-align: left;
+  }
 }

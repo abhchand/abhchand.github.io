@@ -37,10 +37,10 @@ h3 {
 
 nav {
   box-sizing: border-box;
-  width: 50%;
-  max-width: 850px;
-  margin: 0 25%;
+  /* Total width = 60px + 840px + 60px = 960px */
+  width: 840px;
   padding: 60px;
+  margin: 0 auto;
 }
 
 ul {
@@ -142,4 +142,26 @@ ul.bulleted {
 
 .nav-container .links li:hover a {
   color: #555555;
+}
+
+/*
+  Mobile
+*/
+
+@media all and (max-width: 960px) {
+  nav {
+    width: 80%;
+    padding: 60px 0;
+  }
+}
+
+@media all and (max-width: 600px) {
+  .nav-container {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .nav-container .links {
+    margin-left: 0;
+  }
 }
