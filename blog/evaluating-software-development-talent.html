@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Evaluating Software Development Talent | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Evaluating Software Development Talent" />
+    <meta name="description" content="Evaluating Software Development talent is an incredibly difficult process. I've had great success evluating people in the following way.">
+    <meta name="author" content="abhchand">
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.5.0/themes/prism.min.css" type="text/css" media="all"/>
+    <link rel="stylesheet" href="/assets/css/syntax-highlighting.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
+    <!-- JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/plugins/autoloader/prism-autoloader.min.js" integrity="sha256-WIuEtgHNTdrDT2obGtHYz/emxxAj04sJBdMhRjDXd8I=" crossorigin="anonymous"></script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="evaluating-software-development-talent">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Evaluating Software Development Talent</h1>
+              </div>
+              <div class="byline">
+                <time datetime="2020-02-20">20 Feb 2020</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <p>
+                Evaluating Software Development talent is an incredibly difficult process. To make it even hard, there's no widely accepted industry standard or accepted best practice. Plus, every individual has their own opinions based on their own experiences.
+              </p>
+              <p>
+                When we evaluate talent, we're really evaluating two separate but highly related things -
+              </p>
+              <ol>
+                <li>
+                  <b>Technical Talent</b>. This is the ability to deliver on requested functionality in a timely manner. For example, could you trust this person to build a bug-free JSON API in one quarter?
+                </li>
+                <li>
+                  <b>Behavioral Talent</b>. This is everything they bring to the table beyond just their technical skills. Are they easy to work with? Do they enjoy mentoring, or leading design discussions, or working across teams?
+                </li>
+              </ol>
+              <h1>
+                Ways to measure Technical Talent
+              </h1>
+              <p>
+                Behavioral talent is a bit "easier" to evaluate since it can be evaluated by both technical and non-technical people and it's a much more human (qualitative) assessment that people are familiar with evaluating.
+              </p>
+              <p>
+                However, there's traditionally been only a handful of ways to evaluate technical talent.
+              </p>
+              <ul class="bulleted">
+                <li>
+                  On-screen / Pairing Exercise
+                </li>
+                <li>
+                  Whiteboarding or Talking about a problem
+                </li>
+                <li>
+                  Take-home test
+                </li>
+              </ul>
+              <p>
+                The first two have the big disadvantage of putting people out of their comfort zone and having someone watch them work. It's usually at someone else's keyboard with a foreign terminal setup and an over-eager interviewer encouraging you to <i>"just think out loud"</i> instead of letting you think in peace.
+              </p>
+              <p>
+                But ultimately the biggest problem is that they often don't evaluate anything of relevance. In other words, they don't <i>mimic how you would work</i> if you were hired. I've helped applications scale to billions of table rows, why am I writing a bubble sort for you?
+              </p>
+              <p>
+                That leaves the take-home test, which to me holds the most promise in truly evaluating the quality of someone's work. It lets them work in the comfort of their own home, at their pace, and away from prying eyes. The only problem is giving them the right task to work on.
+              </p>
+              <h1>
+                A successful take-home
+              </h1>
+              <p>
+                I've had great success implementing take-home tests in the following way.
+              </p>
+              <p>
+                <b>First</b>, have your organization set up a minimal application that <i>somewhat</i> resembles your actual product. Do you build python microservices? Then initialize a small Flask app with some super basic fixtures. If you build UIs using ReactJS, set up a simple todo with list app with <code class="inline"><a target="_blank" href="https://github.com/facebook/create-react-app">create-react-app</a></code>.
+              </p>
+              <p>
+                <b>Second</b>, ask the candidate to "add some functionality or feature of your choice to the application". Of course, it may help to prompt them with a few guiding examples:
+              </p>
+              <ul class="bulleted">
+                <li>
+                  Implement a really basic email + password sign in
+                </li>
+                <li>
+                  Add form validations to some <code class="inline">&lt;form&gt;</code>
+                </li>
+                <li>
+                  Add a <code class="inline">&lt;button&gt;</code> that triggers a plaintext email with an invitation link
+                </li>
+                <li>
+                  Implement a multi-select dropdown on some page
+                </li>
+              </ul>
+              <p>
+                <b>Lastly</b>, it's important to convey the following:
+              </p>
+              <ol>
+                <li>
+                  <i>"Take your time"</i>. I usually emphasize there's no hard deadline. It would be nice to have it back "in a week or so", but they can take longer if needed. This counteracts one of the main arguments against take-homes, that it cuts into people's personal time. This empowers candidates to work on their schedule and it's a good look for your organization to show that it values people's time.
+                </li>
+                <li>
+                  Some form of <i>"Feel free to get creative"</i>. I always emphasize that the questions are just a guide. The candidate is free to implement anything they'd like to show off, or even go outside of the bounds of the stated prompts. This is really an opportunity to put them in the driver's seat to show off something they're passionate about.
+                </li>
+              </ol>
+              <h1>
+                Conclusion
+              </h1>
+              <p>
+                When complete, the candidate submits a diff or pull request for members of your organization to review. This system even accommodates different skill levels easily: you might expect a junior to submit more functional code but you'd expect a Senior to submit the same feature with a bit more polish, organization, documentation, etc...
+              </p>
+              <p>
+                I've found this system to be successful in that candidates usually enjoy the interview process more and those in your organization appreciate reviewing code instead of looming over people during interviews.
+              </p>
+              <p>
+                And speaking of interviews, this now lets the in-person interviews become a discussion of the code that was written instead of a pressure-filled window to write and evaluate.
+              </p>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+  </body>
+</html>
