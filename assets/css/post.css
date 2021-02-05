@@ -53,6 +53,11 @@ p.note {
   border-radius: 4px;
 }
 
+p.image-caption {
+  color: #888888;
+  font-size: 14px;
+}
+
 .article-content img {
   width: 100%;
 }
