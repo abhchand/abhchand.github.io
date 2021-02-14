@@ -366,6 +366,8 @@ touch /hdd/test.txt</code>
                 Also try restarting the machine and ensure the drive automatically gets detected and mounted on boot.
               </p>
 
+              <h3>Unmounting and making future changes</h3>
+
               <p>
                 If you need to make further changes to <code class="inline">fstab</code> or move the mount point, be sure to <code class="inline">unmount</code> the device first:
               </p>
@@ -374,6 +376,12 @@ touch /hdd/test.txt</code>
                 <code class="language-shell">
 sudo umount /hdd</code>
               </pre>
+
+              <p class="note">
+                If you are physically removing the drive, update <code class="inline">/etc/fstab</code> to comment out or remove the entry relating to your hard drive. If you don't, linux will complain about a missing drive and fail to boot.
+
+                You can also provide the <code class="inlin">nofail</code> option to avoid this. See this <a target="_blank" href="https://unix.stackexchange.com/a/361919">StackExchange question</a>.
+              </p>
             </div>
           </article>
         </main>
