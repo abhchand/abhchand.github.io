@@ -81,7 +81,7 @@
                 <li>You want it to <b>restart automatically</b> if it ever crashes or the process is killed</li>
               </ol>
               <p>On Linux we can do both of these easily with <a target="_blank" href="https://en.wikipedia.org/wiki/Systemd"><code class="inline">systemd</code></a>, a service manager that comes pre-installed with most Linux distributions.</p>
-              <p class="note">The examples below refer to <a target="_blank" href="https://hay-kot.github.io/mealie/">mealie</a>, a recipe web application which comes packaged <a target="_blank" href="https://hub.docker.com/r/hkotel/mealie#!">as a Docker image</a>. However, these instructions can be adapted for any docker container you'd like to manage with <code class="inline">systemd</code>.</p>
+              <p class="note">The examples below refer to <a target="_blank" href="https://hay-kot.github.io/mealie/">mealie</a>, a recipe manager which comes packaged <a target="_blank" href="https://hub.docker.com/r/hkotel/mealie#!">as a Docker image</a>. However, these instructions can be adapted for any docker container you'd like to manage with <code class="inline">systemd</code>.</p>
 
               <h2>Creating wrapper scripts</h2>
               <p><code class="inline">systemd</code> manages services by calling pre-defined commands that <code class="inline">start</code>, <code class="inline">stop</code>, and <code class="inline">reload</code> a given service. So the first thing we'll do is <b>define <code class="inline">bash</code> wrapper scripts</b> that <code class="inline">systemd</code> can use to <code class="inline">start</code> and <code class="inline">stop</code> our docker container(s).</p>
