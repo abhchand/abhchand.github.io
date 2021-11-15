@@ -88,7 +88,7 @@
 
               <div class="vtv-node" id="wrapper-scripts"></div>
 
-              <p class="note">Notice how the "start" script safely creates containers <i>only when one doesn't exist</i>. Implementing custom logic like this is one of the advantages of wrapping our docker commands in a <code class="inline">bash</code> script instead of providing <code class="inline">systemd</code> with a direct <code class="inline">docker</code> command.</p>
+              <p class="note">Notice how the "start" script safely creates containers <i>only when one doesn't exist</i>. Implementing custom logic like this is one of the advantages of wrapping our docker commands in a <code class="inline">bash</code> script instead of providing <code class="inline">systemd</code> with a direct <code class="inline">docker start</code> or <code class="inline">docker stop</code> command.</p>
               <p>A few things to note:</p>
               <ol>
                 <li>I'm choosing to store my wrapper scripts under <code class="inline">/var/mealie/bin</code>, but you can choose any directory.</li>
