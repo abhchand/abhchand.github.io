@@ -4,8 +4,10 @@
 
 body {
   margin: 0;
+  font-family: -apple-system,BlinkMacSystemFont,segoe ui,Roboto,Oxygen,Ubuntu,Cantarell,open sans,helvetica neue,sans-serif;
   font-size: 18px;
-  font-family: Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
+  line-height: 1.6;
+  word-break: break-word;
 }
 
 a:link, a:visited {
