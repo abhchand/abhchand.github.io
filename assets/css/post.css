@@ -8,7 +8,11 @@
   /* Total width = 60px + 840px + 60px = 960px */
   width: 840px;
   padding: 60px;
-  line-height: 1.8;
+}
+
+/* Override highlight.js styling */
+pre code {
+  font-size: 14px !important;
 }
 
 /*
