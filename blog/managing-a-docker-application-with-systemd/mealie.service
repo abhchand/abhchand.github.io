@@ -1,0 +1,12 @@
+[Unit]
+Description=Mealie recipe web application
+Requires=docker.service containerd.service
+After=docker.service containerd.service
+
+[Service]
+Restart=always
+ExecStart=/var/mealie/bin/start
+ExecStop=/var/mealie/bin/stop
+
+[Install]
+WantedBy=default.target

@@ -1,0 +1,214 @@
+<!doctype html>
+<html lang="en-US">
+  <title>
+    Managing a Docker application with systemd | bits n&#039; bytes
+  </title>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- SEO -->
+    <meta name="title" content="Managing a Docker application with systemd" />
+    <meta name="description" content="ChangeMe">
+    <meta name="author" content="abhchand">
+    <meta property="og:image" content="https://abhchand.me/blog/managing-a-docker-application-with-systemd/tux-and-docker-whale.png" />
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.0.1/dist/main.min.css" >
+    <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
+    <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
+
+    <!-- JS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.0.1/dist/index.min.js"></script>
+
+    <!-- Highlight.js -->
+    <!-- Include a separate version of hljs until vanilla-tree-viewer can display single snippets -->
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/styles/monokai-sublime.min.css">
+    <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/highlight.min.js"></script>
+    <script charset="UTF-8" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.4.1/languages/shell.min.js"></script>
+    <script>hljs.initHighlightingOnLoad();</script>
+
+    <!-- Google Analytics -->
+    <script>
+      (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+      (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+      })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+      ga('create', 'UA-93556188-1', 'auto');
+      ga('send', 'pageview');
+
+    </script>
+  </head>
+  <body data-id="managing-a-docker-application-with-systemd">
+    <nav role="navigation">
+      <div class="nav-container">
+        <div class="brand">
+          <a href="/blog">
+            bits <span class="highlight">n</span> bytes
+          </a>
+        </div>
+        <div class="links">
+          <ul>
+            <li><a href="/">About Me</a></li>
+            <li><a href="/projects">Projects</a></li>
+            <li><a href="/blog">Blog</a></li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <div id="content">
+      <section id="primary" class="content-area">
+        <main id="main" class="site-main">
+          <article>
+            <header class="article-header">
+              <div class="title">
+                <h1>Managing a Docker application with <code class="inline">systemd</code></h1>
+              </div>
+              <div class="byline">
+                <time datetime="2021-11-12">12 Nov 2021</time>
+              </div>
+              <div class="tags">
+              </div>
+            </header>
+            <div class="article-content">
+              <img src="tux-and-docker-whale.png" style="width: 400px" />
+
+              <p>You have a <code class="inline">docker</code> application you want to always have running some server (e.g. a home server, a DigitalOcean droplet, etc..)</p>
+              <p>You want this application to run as hands-off as possible, which means:</p>
+              <ol>
+                <li>You want it to <b>start automatically</b> when my server starts/restarts</li>
+                <li>You want it to <b>restart automatically</b> if it ever crashes or the process is killed</li>
+              </ol>
+              <p>On Linux we can do both of these easily with <a target="_blank" href="https://en.wikipedia.org/wiki/Systemd"><code class="inline">systemd</code></a>, a service manager that comes pre-installed with most Linux distributions.</p>
+              <p>(Linux uses "service" as a term for any process or application running in the background.)</p>
+              <p class="note">In the examples below, I run a recipe web application called <a target="_blank" href="https://hay-kot.github.io/mealie/">mealie</a>, which comes packaged <a target="_blank" href="https://hub.docker.com/r/hkotel/mealie#!">as a Docker container</a>. However, this can be used for any docker container you'd like to start and keep running.</p>
+
+              <h2>Creating wrapper scripts</h2>
+              <p><code class="inline">systemd</code> manages services by calling pre-defined commands that <code class="inline">start</code>, <code class="inline">stop</code>, and <code class="inline">reload</code> a given service. So the first thing we'll do is <b>define <code class="inline">bash</code> wrapper scripts</b> that <code class="inline">systemd</code> can use to <code class="inline">start</code> and <code class="inline">stop</code> our docker container(s).</p>
+
+              <div class="vtv-node" id="wrapper-scripts"></div>
+
+              <p class="note">Notice how the "start" script safely creates containers <i>only when one doesn't exist</i>. Implementing custom logic like this is one of the advantages of wrapping our docker commands in a <code class="inline">bash</code> script instead of providing <code class="inline">systemd</code> with a direct <code class="inline">docker</code> command.</p>
+              <p>A few things to note:</p>
+              <ol>
+                <li>I'm choosing to store my wrapper scripts under <code class="inline">/var/mealie/bin</code>, but you can choose any directory.</li>
+                <li>It is good practice is to use long options (<code class="inline">--env</code>) instead of shorthand (<code class="inline">-e</code>) for automated scripts. They are easier to read and understand, and these aren't commands you'll be typing out manually.</li>
+                <li>Your own <code class="inline">docker</code> command might look slightly different (e.g. different volumes, ports, etc..), but be sure to specify a <code class="inline">--name</code>. A fixed <code class="inline">--name</code> makes it easier to <code class="inline">grep</code> the <code class="inline">docker ps</code> list for your container. If you don't specify one, docker will generate a random name.</li>
+              </ol>
+              <p><code class="inline">systemd</code> runs as <code class="inline">root</code>, so ensure these scripts are owned by and accessible to <code class="inline">root</code>:<p>
+
+              <pre><code class="language-shell">
+chmod -R 700 /var/mealie/bin/
+chown -R root /var/mealie/bin/
+              </code></pre>
+
+              <h2>Creating the <code class="inline">systemd</code> Configuration</h2>
+              <p><code class="inline">systemd</code> uses configuration files (which it calls "unit files") to define services and their behavior. On many Linux installations these files are located at <code class="inline">/etc/systemd/system/</code> (<a target="_blank" href="https://askubuntu.com/a/1218946/411497">see this post</a> on how to list all the directories <code class="inline">systemd</code> uses).</p>
+              <p>Create a unit file <code class="inline">/etc/systemd/system/{name}.service</code> for your new service, replacing <code class="inline">{name}</code> with the name of your service.</p>
+
+              <div class="vtv-node" id="mealie-service"></div>
+
+              <p class="note"><code class="inline">systemd</code> provides many more configuration options. See the <a target="_blank" href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html"><code class="inline">[Unit]</code> man page</a> and <a target="_blank" href="https://www.freedesktop.org/software/systemd/man/systemd.service.html"><code class="inline">[Service]</code> man page</a>.</p>
+
+              <p>The above configuration file:</p>
+              <ol>
+                <li>Defines a service (in this case, named <code class="inline">mealie</code>).</li>
+                <li>Defines dependent services (<code class="inline">docker</code>, <code class="inline">containerd</code>) that need to be running before this service starts.</li>
+                <li>Defines commands (our wrapper scripts) that can be used to <code class="inline">start</code> and <code class="inline">stop</code> the service.</li>
+                <li>Tells the system to <b>start</b> this service automatically on system boot (<code class="inline">WantedBy=</code>)</li>
+                <li>Tells the system to <b>restart</b> this service automatically if it stops for any reason (besides a user manually stopping it)</li>
+              </ol>
+              <p>Set the permissions for this file:</p>
+
+              <pre><code class="language-shell">
+chmod -R 644 /etc/systemd/system/mealie.service
+chown -R root /etc/systemd/system/mealie.service
+              </code></pre>
+
+              <p>Finally, <code class="inline">enable</code> your new service. <code class="inline">systemctl</code> is the command used to interface with <code class="inline">systemd</code> services.</p>
+
+              <pre><code class="language-shell">
+sudo systemctl enable mealie
+              </code></pre>
+
+              <h2>Conclusion</h2>
+
+              <p>And that's it! ✨</p>
+              <p>You can now easily <code class="inline">start</code>, <code class="inline">stop</code>, and <code class="inline">reload</code> your service at any time using <code class="inline">systemctl</code>:</p>
+
+              <pre><code class="language-shell">
+sudo systemctl start mealie
+sudo systemctl restart mealie
+sudo systemctl stop mealie
+              </code></pre>
+
+              <p><code class="inline">start</code> your service and verify the <code class="inline">status</code> is now <code class="inline">"active (running)"</code>:</p>
+
+              <pre><code class="language-shell">
+$ sudo systemctl status mealie
+● mealie.service - Mealie recipe web application
+     Loaded: loaded (/etc/systemd/system/mealie.service; enabled; vendor preset: enabled)
+     Active: active (running) since Fri 2021-11-12 15:43:37 EST; 1 day 3h ago
+   Main PID: 1239 (bash)
+      Tasks: 10 (limit: 2147)
+     Memory: 73.5M
+     CGroup: /system.slice/mealie.service
+             ├─1239 bash /var/mealie/bin/start
+             └─1379 docker start --attach mealie_v0.5.1
+              </code></pre>
+
+              <p>You can also verify your docker container is running using <code class="inline">docker ps</code> (you may need to be <code class="inline">root</code>):</p>
+
+              <pre><code class="language-shell">
+$ docker ps
+CONTAINER ID   IMAGE                  COMMAND                  CREATED        STATUS        PORTS                                   NAMES
+b9ea471c7153   hkotel/mealie:v0.5.1   "/bin/sh -c /app/mea…"   28 hours ago   Up 27 hours   0.0.0.0:9925->80/tcp, :::9925->80/tcp   mealie_v0.5.1
+              </code></pre>
+            </div>
+          </article>
+        </main>
+      </section>
+    </div>
+    <footer></footer>
+
+    <script>
+      // wrapper-scripts
+
+      var files = [
+        {
+          path: '/var/mealie/bin/start',
+          url: 'start.sh',
+          selected: true,
+          options: {
+            language: 'bash'
+          }
+        },
+        {
+          path: '/var/mealie/bin/stop',
+          url: 'stop.sh',
+          options: {
+            language: 'bash'
+          }
+        },
+      ];
+
+      var viewer = new VanillaTreeViewer('wrapper-scripts', files, {});
+      viewer.render();
+
+      // mealie-service
+
+      var files = [
+        {
+          path: '/etc/systemd/system/mealie.service',
+          url: 'mealie.service',
+          options: {
+            language: 'plaintext'
+          }
+        }
+      ];
+
+      var viewer = new VanillaTreeViewer('mealie-service', files, {});
+      viewer.render();
+    </script>
+  </body>
+</html>
