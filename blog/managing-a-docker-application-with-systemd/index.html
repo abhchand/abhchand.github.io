@@ -14,12 +14,12 @@
     <meta name=”robots” content="index, follow">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.0.1/dist/main.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/main.min.css" >
     <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
 
     <!-- JS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.0.1/dist/index.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/index.min.js"></script>
 
     <!-- Highlight.js -->
     <!-- Include a separate version of hljs until vanilla-tree-viewer can display single snippets -->
@@ -97,10 +97,8 @@
               </ol>
               <p><code class="inline">systemd</code> runs as <code class="inline">root</code>, so ensure these scripts are owned by and accessible to <code class="inline">root</code>:<p>
 
-              <pre><code class="language-shell">
-chmod -R 700 /var/mealie/bin/
-chown -R root /var/mealie/bin/
-              </code></pre>
+              <pre><code class="language-shell">chmod -R 700 /var/mealie/bin/
+chown -R root /var/mealie/bin/</code></pre>
 
               <h2>Creating the <code class="inline">systemd</code> Unit File</h2>
               <p><code class="inline">systemd</code> uses configuration files (which it calls "unit files") to define services and their behavior. On many Linux installations these files are located at <code class="inline">/etc/systemd/system/</code> (<a target="_blank" href="https://askubuntu.com/a/1218946/411497">see this post</a> on how to list all the directories <code class="inline">systemd</code> uses).</p>
@@ -120,32 +118,25 @@ chown -R root /var/mealie/bin/
               </ol>
               <p>Set the permissions for this new file:</p>
 
-              <pre><code class="language-shell">
-chmod -R 644 /etc/systemd/system/mealie.service
-chown -R root /etc/systemd/system/mealie.service
-              </code></pre>
+              <pre><code class="language-shell">chmod -R 644 /etc/systemd/system/mealie.service
+chown -R root /etc/systemd/system/mealie.service</code></pre>
 
               <p>Finally, <code class="inline">enable</code> your new service. <code class="inline">systemctl</code> is the command used to interface with <code class="inline">systemd</code> services.</p>
 
-              <pre><code class="language-shell">
-sudo systemctl enable mealie
-              </code></pre>
+              <pre><code class="language-shell">sudo systemctl enable mealie</code></pre>
 
               <h2>Conclusion</h2>
 
               <p>And that's it! ✨</p>
               <p>You can now easily <code class="inline">start</code>, <code class="inline">stop</code>, and <code class="inline">reload</code> your service at any time using <code class="inline">systemctl</code>:</p>
 
-              <pre><code class="language-shell">
-sudo systemctl start mealie
+              <pre><code class="language-shell">sudo systemctl start mealie
 sudo systemctl restart mealie
-sudo systemctl stop mealie
-              </code></pre>
+sudo systemctl stop mealie</code></pre>
 
               <p><code class="inline">start</code> your service and verify the <code class="inline">status</code> is now <code class="inline">"active (running)"</code>:</p>
 
-              <pre><code class="language-shell">
-$ sudo systemctl status mealie
+              <pre><code class="language-shell">$ sudo systemctl status mealie
 ● mealie.service - Mealie recipe web application
      Loaded: loaded (/etc/systemd/system/mealie.service; enabled; vendor preset: enabled)
      Active: active (running) since Fri 2021-11-12 15:43:37 EST; 1 day 3h ago
@@ -154,16 +145,13 @@ $ sudo systemctl status mealie
      Memory: 73.5M
      CGroup: /system.slice/mealie.service
              ├─1239 bash /var/mealie/bin/start
-             └─1379 docker start --attach mealie_v0.5.1
-              </code></pre>
+             └─1379 docker start --attach mealie_v0.5.1</code></pre>
 
               <p>You can also verify your docker container is running using <code class="inline">docker ps</code> (you may need to be <code class="inline">root</code>):</p>
 
-              <pre><code class="language-shell">
-$ docker ps
+              <pre><code class="language-shell">$ docker ps
 CONTAINER ID   IMAGE                  COMMAND                  CREATED        STATUS        PORTS                                   NAMES
-b9ea471c7153   hkotel/mealie:v0.5.1   "/bin/sh -c /app/mea…"   28 hours ago   Up 27 hours   0.0.0.0:9925->80/tcp, :::9925->80/tcp   mealie_v0.5.1
-              </code></pre>
+b9ea471c7153   hkotel/mealie:v0.5.1   "/bin/sh -c /app/mea…"   28 hours ago   Up 27 hours   0.0.0.0:9925->80/tcp, :::9925->80/tcp   mealie_v0.5.1</code></pre>
             </div>
           </article>
         </main>

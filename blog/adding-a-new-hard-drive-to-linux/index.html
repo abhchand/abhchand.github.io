@@ -92,10 +92,7 @@
                 Before installing your new drive, grab a list of your current drives using <code class="inline">parted</code>. This is optional, but I like to use this "before" snapshot to compare it to the output we'll generate after installing the drive.
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo parted -l</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo parted -l</code></pre>
 
               <p>
                 Next, you'll want to power down your machine and physically install the new hard drive. This varies by make and model, but you should see hard drive slots to add new drives when you open up the casing.
@@ -105,10 +102,9 @@ sudo parted -l</code>
                 I personally recommend the <a target="_blank" href="https://smile.amazon.com/s?k=hp+proliant+microserver&ref=nb_sb_noss_2">HP Proliant</a> line of home servers. In this example I added a <a target="_blank" href="https://smile.amazon.com/gp/product/B078DPCY3T/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1">1TB Samsung SSD</a> (which also requires a <a target="_blank" href="https://smile.amazon.com/gp/product/B00F3QFKNS/ref=ppx_yo_dt_b_search_asin_title?ie=UTF8&psc=1">2.5" to 3.5" HDD adapter tray</a>)
               </p>
 
-              <a href="/blog/adding-a-new-hard-drive-to-linux/hp-proliant-microserver.jpg">
+              <a href="http://www.mswhs.com/2011/01/hp-proliant-microserver-review/">
                 <img src="/blog/adding-a-new-hard-drive-to-linux/hp-proliant-microserver-thumb.jpg" style="max-width: 300px; display: block; margin: auto;" />
               </a>
-              <p class="image-caption">Image credit: <a href="http://www.mswhs.com/2011/01/hp-proliant-microserver-review/">MSWHS</a></p>
 
               <h1>2. Partition and Format the drive</h1>
 
@@ -122,9 +118,7 @@ sudo parted -l</code>
                 This time you'll notice a new drive, which may be labeled as <code class="inline">unrecognized disk</code>. In this example I added a new <a target="_blank" href="https://smile.amazon.com/gp/product/B078DPCY3T/ref=ppx_yo_dt_b_search_asin_image?ie=UTF8&psc=1">1TB Samsung SSD</a>, which is named <code class="inline">/dev/sdb</code>.
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-> sudo parted -l
+              <pre class="code-block"><code class="language-shell">> sudo parted -l
 
 Model: ATA VB0250EAVER (scsi)
 Disk /dev/sda: 250GB
@@ -142,8 +136,7 @@ Model: ATA Samsung SSD 860 (scsi)
 Disk /dev/sdb: 1000GB
 Sector size (logical/physical): 512B/4096B
 Partition Table: unknown
-Disk Flags:</code>
-              </pre>
+Disk Flags:</code></pre>
 
               <p class="note">
                 Linux drives are usually named in the format <code class="inline">/dev/(type)(letter)</code>. The <code class="inline">type</code> is a two letter identifier based on the drive type, and the <code class="inline">letter</code> starts with <code class="inline">a</code> and increments sequentially: <code class="inline">/dev/sda</code>, <code class="inline">/dev/sdb</code>, etc...
@@ -157,10 +150,7 @@ Disk Flags:</code>
                 Start the <code class="inline">parted</code> interactive console by giving it the device name you'd like to edit:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo parted /dev/sdb</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo parted /dev/sdb</code></pre>
 
               <p>
                 It's important you get the right device name - you don't want to format the wrong drive! You can always switch to a different selected drive by typing <code class="inline">select /dev/sdX</code> in the <code class="inline">parted</code> console.
@@ -174,9 +164,7 @@ sudo parted /dev/sdb</code>
                 Create a <code class="inline">gpt</code> partition table and verify the output:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-(parted) mklabel gpt
+              <pre class="code-block"><code class="language-shell">(parted) mklabel gpt
 (parted) print
 
 Model: ATA Samsung SSD 860 (scsi)
@@ -185,8 +173,7 @@ Sector size (logical/physical): 512B/4096B
 Partition Table: gpt
 Disk Flags:
 
-Number  Start  End  Size  File system  Name  Flags</code>
-              </pre>
+Number  Start  End  Size  File system  Name  Flags</code></pre>
 
               <p>
                 As you can see, it defaults to having no partitions (note the empty table at the bottom of the output).
@@ -196,9 +183,7 @@ Number  Start  End  Size  File system  Name  Flags</code>
                 Now let's partition the entire disk. Note that you can also choose to partition <i>part</i> of the disk or even certain ranges (e.g. <code class="inline">mkpart primary ext4 0GB 500GB</code>) in order to create multiple partitions if you'd like.
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-(parted) mkpart primary ext4 0% 100%
+              <pre class="code-block"><code class="language-shell">(parted) mkpart primary ext4 0% 100%
 (parted) print
 Model: ATA Samsung SSD 860 (scsi)
 Disk /dev/sdb: 1000GB
@@ -207,8 +192,7 @@ Partition Table: gpt
 Disk Flags:
 
 Number  Start   End     Size    File system  Name     Flags
- 1      1049kB  1000GB  1000GB  ext4         primary</code>
-              </pre>
+ 1      1049kB  1000GB  1000GB  ext4         primary</code></pre>
 
               <p>
                 The partition table now has 1 partion equal to the size of the entire drive.
@@ -222,10 +206,7 @@ Number  Start   End     Size    File system  Name     Flags
                 Finally, quit the <code class="inline">parted</code> console:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-(parted) quit</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">(parted) quit</code></pre>
 
               <h3>Formating the Partition</h3>
 
@@ -233,22 +214,16 @@ Number  Start   End     Size    File system  Name     Flags
                 Use <code class="inline">mkfs</code> to format our new partition:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo mkfs -t ext4 /dev/sdb1</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo mkfs -t ext4 /dev/sdb1</code></pre>
 
               <p>
                 Similar to device names, partitions under a device (drive) are named by sequentially numbering the device names:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-/dev/sdb1
+              <pre class="code-block"><code class="language-shell">/dev/sdb1
 /dev/sdb2
 /dev/sdb3
-...</code>
-              </pre>
+...</code></pre>
 
 
               <h1>Mount and Register the Drive</h1>
@@ -257,10 +232,7 @@ sudo mkfs -t ext4 /dev/sdb1</code>
                 Create a mount point - this is the path where your new drive will be located. It can be any arbitrary path
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo mkdir -p /hdd</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo mkdir -p /hdd</code></pre>
 
               <h3>Mounting the Drive</h3>
 
@@ -268,18 +240,13 @@ sudo mkdir -p /hdd</code>
                 Mount the drive
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo mount /hdd</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo mount /hdd</code></pre>
 
               <p>
                 Verify the new mount with <code class="inline">df</code>:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-df -h
+              <pre class="code-block"><code class="language-shell">df -h
 Filesystem      Size  Used Avail Use% Mounted on
 udev            926M  8.0K  926M   1% /dev
 tmpfs           188M  940K  187M   1% /run
@@ -288,8 +255,7 @@ none            4.0K     0  4.0K   0% /sys/fs/cgroup
 none            5.0M     0  5.0M   0% /run/lock
 none            938M   72K  938M   1% /run/shm
 none            100M   12K  100M   1% /run/user
-/dev/sdb1       917G   72M  871G   1% /hdd</code>
-              </pre>
+/dev/sdb1       917G   72M  871G   1% /hdd</code></pre>
 
               <p>
                 The output shows that the new device partition <code class="inline">/dev/sdb1</code> is mounted at <code class="inline">/hdd</code>.</code>
@@ -308,29 +274,20 @@ none            100M   12K  100M   1% /run/user
               <p>
                 First, find the drive's <code class="inline">UUID</code>. We use the <code class="inline">UUID</code> because unlike device lables (e.g. <code class="inline">/dev/sdb</code>), it doesn't change if you move the drive to a new slot or machine in the future.</code>
 
-              <pre class="code-block">
-                <code class="language-shell">
-> sudo blkid | grep sdb1
-/dev/sdb1: UUID="31f32bc3-13ab-48dd-bd24-1ac9fa9325e7" TYPE="ext4"</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">> sudo blkid | grep sdb1
+/dev/sdb1: UUID="31f32bc3-13ab-48dd-bd24-1ac9fa9325e7" TYPE="ext4"</code></pre>
 
               <p>
                 Open <code class="inline">/etc/fstab</code> file with <code class="inline">root</code> permissions:</code>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo vim /etc/fstab</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo vim /etc/fstab</code></pre>
 
               <p>
                 And add following to the end of the file, substituting your own <code class="inline">UUID</code> and mount path:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-# &lt;file system&gt; &lt;mount point&gt;   &lt;type&gt;  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;
-/dev/disk/by-uuid/31f32bc3-13ab-48dd-bd24-1ac9fa9325e7    /hdd    ext4    defaults    0    0</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell"># &lt;file system&gt; &lt;mount point&gt;   &lt;type&gt;  &lt;options&gt;       &lt;dump&gt;  &lt;pass&gt;
+/dev/disk/by-uuid/31f32bc3-13ab-48dd-bd24-1ac9fa9325e7    /hdd    ext4    defaults    0    0</code></pre>
 
               <p class="note">
                 The <code class="inline">man fstab</code> documentation outlines various configurable options. Here we use <code class="inline">defaults</code>, which defaults to a few common-sense options outlined in the documentation. One of the defaults is <code class="inline">nouser</code>, meaning only a super user can <code class="inline">mount</code> drives. This is why we executed <code class="inline">sudo mount</code> above.
@@ -346,12 +303,9 @@ sudo vim /etc/fstab</code>
                 It's probably more useful to have it be owned by a specific user, so you'll want to recursively update its permissions:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo chmod -R 775 /hdd
+              <pre class="code-block"><code class="language-shell">sudo chmod -R 775 /hdd
 sudo chown -R abhishek /hdd
-sudo chgrp -R abhishek /hdd</code>
-              </pre>
+sudo chgrp -R abhishek /hdd</code></pre>
 
               <h3>Testing</h3>
 
@@ -359,10 +313,7 @@ sudo chgrp -R abhishek /hdd</code>
                 Test out your new drive by writing a file to it:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-touch /hdd/test.txt</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">touch /hdd/test.txt</code></pre>
 
               <p>
                 Also try restarting the machine and ensure the drive automatically gets detected and mounted on boot.
@@ -374,10 +325,7 @@ touch /hdd/test.txt</code>
                 If you need to make further changes to <code class="inline">fstab</code> or move the mount point, be sure to <code class="inline">unmount</code> the device first:
               </p>
 
-              <pre class="code-block">
-                <code class="language-shell">
-sudo umount /hdd</code>
-              </pre>
+              <pre class="code-block"><code class="language-shell">sudo umount /hdd</code></pre>
 
               <p class="note">
                 If you are physically removing the drive, update <code class="inline">/etc/fstab</code> to comment out or remove the entry relating to your hard drive. If you don't, linux will complain about a missing drive and fail to boot.
