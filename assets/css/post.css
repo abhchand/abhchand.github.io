@@ -1,3 +1,10 @@
+body {
+  background-color: #111111;
+  color: #E8E8E8;
+  font-size: 24px;
+  line-height: 40px;
+}
+
 /*
   Content
 */
@@ -5,14 +12,8 @@
 #content {
   box-sizing: border-box;
   margin: 0 auto;
-  /* Total width = 60px + 840px + 60px = 960px */
-  width: 840px;
+  width: 960px;
   padding: 60px;
-}
-
-/* Override highlight.js styling */
-pre code {
-  font-size: 14px !important;
 }
 
 /*
@@ -47,19 +48,22 @@ pre code {
   margin-bottom: 25px;
 }
 
-p.note {
-  display: block;
-  padding: 9.5px;
-  margin: 0 0 10px;
-  color:  black;
-  background-color: #FFFFE0;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+li {
+  margin-bottom: 15px;
 }
 
-p.image-caption {
-  color: #888888;
-  font-size: 14px;
+p {
+  margin: 32px 0;
+}
+
+p.note {
+  display: block;
+  padding: 20px;
+  margin: 0 0 10px;
+  color:  black;
+  background-color: #F0F0E0;
+  border: 1px solid #ccc;
+  border-radius: 4px;
 }
 
 .article-content img {
@@ -67,9 +71,30 @@ p.image-caption {
 }
 
 /*
+  Highlight.js
+ */
+
+/*
+  Target only standalone hljs snippets, and avoid
+  the code blocks defined by vanilla-tree-viewer
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  font-size: 20px;
+  line-height: 36px;
+}
+
+/*
   VanillaTreeViewer
 */
 
+.vtv {
+  /*
+    Disable default shadow - doesn't  work well
+    on dark background
+  */
+  box-shadow: none;
+}
 .vtv-node {
   width: 100%;
   margin: 40px auto;

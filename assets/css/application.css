@@ -4,7 +4,7 @@
 
 body {
   margin: 0;
-  font-family: -apple-system,BlinkMacSystemFont,segoe ui,Roboto,Oxygen,Ubuntu,Cantarell,open sans,helvetica neue,sans-serif;
+  font-family: PT Sans,sans-serif;
   font-size: 18px;
   line-height: 1.6;
   word-break: break-word;
@@ -59,7 +59,7 @@ code.inline {
   padding: 2px 4px;
   color: #c7254e;
   font-size: 90%;
-  background-color: #f9f2f4;
+  background-color: #333;
   border-radius: 4px;
 }
 
@@ -72,6 +72,8 @@ ul.bulleted {
 */
 
 .nav-container {
+  font-size: 24px;
+  line-height: 40px;
   display: flex;
   flex-direction: row;
   flex-wrap: nowrap;
