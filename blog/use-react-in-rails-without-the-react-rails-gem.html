@@ -13,12 +13,12 @@
     <meta property="og:image" content="https://abhchand.me/assets/images/me/profile-thumb.jpg" />
     <meta name=”robots” content="index, follow">
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/main.min.css">
     <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
 
     <!-- JS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/index.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/index.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.0/languages/erb.min.js"></script>
 
     <!-- Google Analytics -->
@@ -31,6 +31,10 @@
       ga('create', 'UA-93556188-1', 'auto');
       ga('send', 'pageview');
 
+      // Render VanillaTreeViewer
+      document.addEventListener('DOMContentLoaded', function() {
+        VanillaTreeViewer.renderAll();
+      }, false);
     </script>
   </head>
   <body data-id="use-react-in-rails-without-the-react-rails-gem">
@@ -83,7 +87,20 @@
               <p>The helper will assign the DOM node a unique <code class="inline">id</code> so the JavaScript code can locate it later. We will also store any <code class="inline">props</code> we want to pass to the component as a <code class="inline">data-*</code> attribute on the element itself.</p>
               <p>All we have to do is call this helper from the <code class="inline">view</code>. I've used the name <code class="inline">react_component</code> to mirror the name of the view helper that <code class="inline">react-rails</code> provides.</p>
 
-              <div id='rails-helper' class='vtv-node'></div>
+              <!-- Rails Helper -->
+              <ol class='vtv'>
+                <li
+                  data-path="app/helpers/application_helper.rb"
+                  data-url="https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/3025fc6678679528bf0c866444f2ed39842a6463/application_helper.rb"
+                  data-language="ruby"
+                  data-selected="true">
+                </li>
+                <li
+                  data-path="/app/views/users/index.html.erb"
+                  data-url="https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/3025fc6678679528bf0c866444f2ed39842a6463/index.html.erb"
+                  data-language="erb">
+                </li>
+              </ol>
 
               <h2>The JavaScript Side</h2>
 
@@ -98,7 +115,17 @@
 
               <p>Once that's set up, it's just a matter of calling <code class="inline">mountReactComponent()</code> without our desired example component.</p>
 
-              <div id='js-helper' class='vtv-node'></div>
+              <!-- JS Helper -->
+              <ol class='vtv' data-language="javascript">
+                <li
+                  data-path="app/frontend/mountReactComponent.js"
+                  data-url="https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/e3074cc91b57d4dcb23821543ebd2a7e203e54b8/mountReactComponent.js">
+                </li>
+                <li
+                  data-path="/app/frontend/components/Example.jsx"
+                  data-url="https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/e3074cc91b57d4dcb23821543ebd2a7e203e54b8/Example.jsx">
+                </li>
+              </ol>
 
               <h2>Conclusion</h2>
 
@@ -110,49 +137,5 @@
       </section>
     </div>
     <footer></footer>
-
-    <!-- VanillaTreeViewer -->
-    <script>
-
-      // rails-helper
-
-      var files = [
-        {
-          path: 'app/helpers/application_helper.rb',
-          url: 'https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/3025fc6678679528bf0c866444f2ed39842a6463/application_helper.rb',
-          selected: true,
-          options: {
-            language: 'ruby'
-          }
-        },
-        {
-          path: '/app/views/users/index.html.erb',
-          url: 'https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/3025fc6678679528bf0c866444f2ed39842a6463/index.html.erb',
-          options: {
-            language: 'erb'
-          }
-        }
-      ];
-
-      var viewer = new VanillaTreeViewer('rails-helper', files, {});
-      viewer.render();
-
-      // js-viewer
-
-      var files = [
-        {
-          path: 'app/frontend/mountReactComponent.js',
-          url: 'https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/e3074cc91b57d4dcb23821543ebd2a7e203e54b8/mountReactComponent.js',
-          selected: true
-        },
-        {
-          path: '/app/frontend/components/Example.jsx',
-          url: 'https://gist.githubusercontent.com/abhchand/88db18112569aedcbfc244f35c7dac5c/raw/e3074cc91b57d4dcb23821543ebd2a7e203e54b8/Example.jsx'
-        }
-      ];
-
-      var viewer = new VanillaTreeViewer('js-helper', files, { language: 'javascript' });
-      viewer.render();
-    </script>
   </body>
 </html>

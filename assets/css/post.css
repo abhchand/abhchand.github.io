@@ -92,16 +92,16 @@ pre[class*="language-"] {
   VanillaTreeViewer
 */
 
-.vtv {
+.vtv-wrapper {
+  width: 100%;
+  margin: 40px auto;
+}
+.vtv-root {
   /*
     Disable default shadow - doesn't  work well
     on dark background
   */
   box-shadow: none;
-}
-.vtv-node {
-  width: 100%;
-  margin: 40px auto;
 }
 
 /*

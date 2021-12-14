@@ -14,12 +14,12 @@
     <meta name=”robots” content="index, follow">
 
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/main.min.css" >
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/main.min.css" >
     <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
 
     <!-- JS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@1.1.1/dist/index.min.js"></script>
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/index.min.js"></script>
 
     <!-- Highlight.js -->
     <!-- Include a separate version of hljs until vanilla-tree-viewer can display single snippets -->
@@ -38,6 +38,10 @@
       ga('create', 'UA-93556188-1', 'auto');
       ga('send', 'pageview');
 
+      // Render VanillaTreeViewer
+      document.addEventListener('DOMContentLoaded', function() {
+        VanillaTreeViewer.renderAll();
+      }, false);
     </script>
   </head>
   <body data-id="managing-a-docker-application-with-systemd">
@@ -87,7 +91,13 @@
               <h2>Creating wrapper scripts</h2>
               <p><code class="inline">systemd</code> manages services by calling pre-defined commands that <code class="inline">start</code>, <code class="inline">stop</code>, and <code class="inline">reload</code> a given service. So the first thing we'll do is <b>define <code class="inline">bash</code> wrapper scripts</b> that <code class="inline">systemd</code> can use to <code class="inline">start</code> and <code class="inline">stop</code> our docker container(s).</p>
 
-              <div class="vtv-node" id="wrapper-scripts"></div>
+              <!-- Wrapper Scripts -->
+              <ol class="vtv" data-language="bash">
+                <li data-path="/var/mealie/bin/start" data-url="start.sh" data-selected="true">
+                </li>
+                <li data-path="/var/mealie/bin/stop" data-url="stop.sh">
+                </li>
+              </ol>
 
               <p class="note">Notice how the "start" script safely creates containers <i>only when one doesn't exist</i>. Implementing custom logic like this is one of the advantages of wrapping our docker commands in a <code class="inline">bash</code> script instead of providing <code class="inline">systemd</code> with a direct <code class="inline">docker start</code> or <code class="inline">docker stop</code> command.</p>
               <p>A few things to note:</p>
@@ -105,7 +115,14 @@ chown -R root /var/mealie/bin/</code></pre>
               <p><code class="inline">systemd</code> uses configuration files (which it calls "unit files") to define services and their behavior. On many Linux installations these files are located at <code class="inline">/etc/systemd/system/</code> (<a target="_blank" href="https://askubuntu.com/a/1218946/411497">see this post</a> on how to list all the directories <code class="inline">systemd</code> uses).</p>
               <p>Create a unit file <code class="inline">/etc/systemd/system/{name}.service</code> for your new service, replacing <code class="inline">{name}</code> with the name of your service.</p>
 
-              <div class="vtv-node" id="mealie-service"></div>
+              <!-- Mealie Service -->
+              <ol class='vtv'>
+                <li
+                  data-path="/etc/systemd/system/mealie.service"
+                  data-url="mealie.service"
+                  data-language="plaintext">
+                </li>
+              </ol>
 
               <p class="note"><code class="inline">systemd</code> provides many more configuration options. See the <a target="_blank" href="https://www.freedesktop.org/software/systemd/man/systemd.unit.html"><code class="inline">[Unit]</code> man page</a> and <a target="_blank" href="https://www.freedesktop.org/software/systemd/man/systemd.service.html"><code class="inline">[Service]</code> man page</a>.</p>
 
@@ -159,45 +176,5 @@ b9ea471c7153   hkotel/mealie:v0.5.1   "/bin/sh -c /app/mea…"   28 hours ago   
       </section>
     </div>
     <footer></footer>
-
-    <script>
-      // wrapper-scripts
-
-      var files = [
-        {
-          path: '/var/mealie/bin/start',
-          url: 'start.sh',
-          selected: true,
-          options: {
-            language: 'bash'
-          }
-        },
-        {
-          path: '/var/mealie/bin/stop',
-          url: 'stop.sh',
-          options: {
-            language: 'bash'
-          }
-        },
-      ];
-
-      var viewer = new VanillaTreeViewer('wrapper-scripts', files, {});
-      viewer.render();
-
-      // mealie-service
-
-      var files = [
-        {
-          path: '/etc/systemd/system/mealie.service',
-          url: 'mealie.service',
-          options: {
-            language: 'plaintext'
-          }
-        }
-      ];
-
-      var viewer = new VanillaTreeViewer('mealie-service', files, {});
-      viewer.render();
-    </script>
   </body>
 </html>
