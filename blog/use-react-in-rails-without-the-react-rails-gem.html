@@ -13,12 +13,12 @@
     <meta property="og:image" content="https://abhchand.me/assets/images/me/profile-thumb.jpg" />
     <meta name=”robots” content="index, follow">
     <!-- CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/main.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.1.0/dist/main.min.css">
     <link rel="stylesheet" href="/assets/css/application.css" type="text/css" media="all" />
     <link rel="stylesheet" href="/assets/css/post.css" type="text/css" media="all" />
 
     <!-- JS -->
-    <script type="text/javascript" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.0.0/dist/index.min.js"></script>
+    <script type="text/javascript" onload="VanillaTreeViewer.renderAll();" src="https://cdn.jsdelivr.net/gh/abhchand/vanilla-tree-viewer@2.1.0/dist/index.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.0/languages/erb.min.js"></script>
 
     <!-- Google Analytics -->
@@ -30,11 +30,6 @@
 
       ga('create', 'UA-93556188-1', 'auto');
       ga('send', 'pageview');
-
-      // Render VanillaTreeViewer
-      document.addEventListener('DOMContentLoaded', function() {
-        VanillaTreeViewer.renderAll();
-      }, false);
     </script>
   </head>
   <body data-id="use-react-in-rails-without-the-react-rails-gem">
