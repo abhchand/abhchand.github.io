@@ -53,6 +53,10 @@ body {
   margin-bottom: 25px;
 }
 
+.article-content .accent {
+  color: var(--text-accent);
+}
+
 li {
   margin-bottom: 15px;
 }

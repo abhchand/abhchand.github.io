@@ -20,4 +20,5 @@
 
   /* Semantic Variables */
   --text-primary: var(--color-soft-blue);
+  --text-accent: var(--color-gold);
 }
