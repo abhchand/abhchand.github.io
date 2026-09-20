@@ -27,11 +27,11 @@
 }
 
 .project-card a {
-  color: #2196F3;
+  color: var(--color-russian-blue);
 }
 
 .project-card svg {
-  fill: #757575;
+  fill: var(--color-granite-gray);
 }
 
 .project-card__header {
@@ -44,7 +44,7 @@
 
 .project-card__header-text--title {
   margin: 10px 0;
-  color: #2196F3;
+  color: var(--color-russian-blue);
   overflow: hidden;
   white-space:nowrap;
   text-overflow:ellipsis;
@@ -55,7 +55,7 @@
 }
 
 .project-card__header-text--title a:hover {
-  color: #FFAA00;
+  color: var(--color-orange-flash);
 }
 
 .project-card__header-text--subtitle {
@@ -100,7 +100,7 @@
   min-width: 40px;
   height: 40px;
   margin-right: 10px;
-  border: 3px solid #FFAA00;
+  border: 3px solid var(--color-orange-flash);
   border-radius: 50%;
 }
 
@@ -118,7 +118,7 @@
 .project-card__technology-name {
   width: 120px;
   max-width: 120px;
-  color: #757575;
+  color: var(--color-granite-gray);
 }
 
 /*

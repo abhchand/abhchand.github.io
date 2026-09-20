@@ -49,14 +49,14 @@
   align-items: center;
   width: 29%;
   margin: 0 4% 35px 0%;
-  color: #757575;
+  color: var(--color-granite-gray);
   font-size: 14px;
 }
 
 .interests__element svg {
   width: 42px;
   height: 42px;
-  fill: #757575;
+  fill: var(--color-granite-gray);
 }
 
 .interests__element svg text {
@@ -74,14 +74,14 @@
 .profile-photo img {
   box-sizing: border-box;
   width: 100%;
-  border: 2px solid #2196F3;
+  border: 2px solid var(--color-russian-blue);
   -webkit-border-radius: 50%;
   -moz-border-radius: 50%;
   border-radius: 50%;
 }
 
 .profile-photo img:hover {
-  border: 2px solid #FFAA00;
+  border: 2px solid var(--color-orange-flash);
 }
 
 .share {
@@ -100,7 +100,7 @@
 
 /* Specify `a` to make this specific enough to override `application.css` */
 a.share_element-link {
-  color: #000000;
+  color: var(--color-black);
   font-size: 16px;
   text-decoration: none;
 }

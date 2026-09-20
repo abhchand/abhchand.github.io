@@ -1,6 +1,6 @@
 body {
-  background-color: #111111;
-  color: #E8E8E8;
+  background-color: var(--color-gray1);
+  color: var(--color-white-marble);
   font-size: 22px;
   line-height: 36px;
 }

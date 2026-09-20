@@ -1,6 +1,6 @@
 body {
-  background-color: #111111;
-  color: #E8E8E8;
+  background-color: var(--color-gray1);
+  color: var(--color-white-marble);
   font-size: 22px;
   line-height: 36px;
 }
@@ -38,7 +38,7 @@ body {
 }
 
 .article-header .byline time {
-  color: #888888;
+  color: var(--color-gray8);
   font-size: 14px;
 }
 
@@ -65,7 +65,7 @@ p.note {
   padding: 20px;
   margin: 0 0 10px;
   color:  black;
-  background-color: #F0F0E0;
+  background-color: var(--color-antique-white);
   border: 1px solid #ccc;
   border-radius: 4px;
 }
