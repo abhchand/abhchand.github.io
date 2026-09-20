@@ -55,7 +55,7 @@
 }
 
 .project-card__header-text--title a:hover {
-  color: var(--color-orange-flash);
+  color: var(--color-gold);
 }
 
 .project-card__header-text--subtitle {

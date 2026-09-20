@@ -81,7 +81,7 @@
 }
 
 .profile-photo img:hover {
-  border: 2px solid var(--color-orange-flash);
+  border: 2px solid var(--color-gold);
 }
 
 .share {
