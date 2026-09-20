@@ -12,7 +12,8 @@ body {
 #content {
   box-sizing: border-box;
   margin: 0 auto;
-  width: 960px;
+  /* Total width = 60px + 840px + 60px = 960px */
+  width: 840px;
   padding: 60px;
 }
 
