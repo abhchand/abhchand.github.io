@@ -27,7 +27,7 @@
 }
 
 .project-card a {
-  color: var(--color-russian-blue);
+  color: var(--text-primary);
 }
 
 .project-card svg {
@@ -44,7 +44,7 @@
 
 .project-card__header-text--title {
   margin: 10px 0;
-  color: var(--color-russian-blue);
+  color: var(--text-primary);
   overflow: hidden;
   white-space:nowrap;
   text-overflow:ellipsis;

@@ -11,7 +11,7 @@ body {
 }
 
 a:link, a:visited {
-  color: var(--color-russian-blue);
+  color: var(--text-primary);
   text-decoration: underline;
 }
 
@@ -22,7 +22,7 @@ a:hover {
 blockquote {
   margin-left: 10px;
   padding-left: 40px;
-  border-left: 2px var(--color-russian-blue) solid;
+  border-left: 2px var(--text-primary) solid;
 }
 
 h1,h2,h3,h4,h5,h6 {
@@ -80,7 +80,7 @@ ul.bulleted {
 }
 
 .nav-container .brand {
-  color: var(--color-russian-blue);
+  color: var(--text-primary);
   font-size: 32px;
 }
 

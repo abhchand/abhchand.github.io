@@ -1,9 +1,11 @@
 :root {
   /* Colors  */
 
-  --color-russian-blue: #2196F3;
+  --text-primary: #2196F3;
+  --color-soft-blue: #64B5F6;
   --color-orange-flash: #FFAA00;
   --color-old-rose: #C7254E;
+  --color-gold: #FFD700;
 
   --color-black: #000000;
   --color-gray1: #111111;
@@ -15,4 +17,7 @@
 
   --color-white-marble: #E8E8E8;
   --color-antique-white: #F0F0E0;
+
+  /* Semantic Variables */
+  --text-primary: var(--color-soft-blue);
 }

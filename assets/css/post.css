@@ -35,6 +35,7 @@ body {
 
 .article-header .title h1 {
   margin: 10px 0;
+  color: var(--color-gold);
 }
 
 .article-header .byline time {
