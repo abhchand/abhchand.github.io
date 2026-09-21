@@ -17,7 +17,7 @@ body {
   padding: 60px;
 }
 
-.blog-index {
+.article__all-posts-link {
   margin-bottom: 40px;
 }
 
@@ -25,7 +25,7 @@ body {
   Article Header
 */
 
-.article-header {
+.article__header {
   display: flex;
   flex-direction: column;
   flex-wrap: nowrap;
@@ -34,12 +34,12 @@ body {
   margin-bottom: 40px;
 }
 
-.article-header .title h1 {
+.article__header .title h1 {
   margin: 10px 0;
   color: var(--color-gold);
 }
 
-.article-header .byline time {
+.article__header .byline time {
   color: var(--color-gray8);
   font-size: 14px;
 }
@@ -49,12 +49,12 @@ body {
   Article Content
 */
 
-.article-content h1, h2, h3 {
+.article__content h1, h2, h3 {
   margin-top: 50px;
   margin-bottom: 25px;
 }
 
-.article-content .accent {
+.article__content .accent {
   color: var(--text-accent);
 }
 
@@ -76,7 +76,7 @@ p.note {
   border-radius: 4px;
 }
 
-.article-content img {
+.article__content img {
   width: 100%;
 }
 
