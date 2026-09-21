@@ -28,6 +28,11 @@ body {
  Posts
 */
 
+h1 {
+  margin: 10px 0;
+  color: var(--color-gold);
+}
+
 .posts {
   padding-left: 0;
 }
