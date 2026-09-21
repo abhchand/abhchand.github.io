@@ -5,10 +5,6 @@ body {
   line-height: 36px;
 }
 
-/*
-  Content
-*/
-
 #content {
   box-sizing: border-box;
   margin: 0 auto;
@@ -17,13 +13,25 @@ body {
   padding: 60px;
 }
 
+@media all and (max-width: 960px) {
+  #content {
+    flex-direction: column-reverse;
+    width: 80%;
+    max-width: 500px;
+    padding: 60px 0;
+    min-width: 350px;
+    text-align: left;
+  }
+}
+
+/*
+  Article
+*/
+
 .article__all-posts-link {
   margin-bottom: 40px;
 }
 
-/*
-  Article Header
-*/
 
 .article__header {
   display: flex;
@@ -108,19 +116,4 @@ pre[class*="language-"] {
     on dark background
   */
   box-shadow: none;
-}
-
-/*
-  Mobile
-*/
-
-@media all and (max-width: 960px) {
-  #content {
-    flex-direction: column-reverse;
-    width: 80%;
-    max-width: 500px;
-    padding: 60px 0;
-    min-width: 350px;
-    text-align: left;
-  }
 }
